@@ -2,6 +2,8 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from scipy import signal, linalg, integrate
+from scipy.integrate import simps
+
 from scipy.stats import zscore, linregress
 from scipy.signal import find_peaks, welch
 import matplotlib.pyplot as plt
@@ -78,7 +80,7 @@ def compute_bandpower(data, fs, band, window_sec=4):
     win = int(window_sec * fs)
     freqs, psd = signal.welch(data, fs, nperseg=win)
     idx_band = np.logical_and(freqs >= band[0], freqs <= band[1])
-    bp_abs = integrate.simps(psd[idx_band], dx=freqs[1] - freqs[0])
+    bp_abs = simps(psd[idx_band], dx=freqs[1] - freqs[0])
     bp_rel = bp_abs / integrate.simps(psd, dx=freqs[1] - freqs[0])
     return bp_abs, bp_rel
 
